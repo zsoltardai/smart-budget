@@ -3,6 +3,7 @@
     include_once 'base/FileSystem.php';
     include_once 'base/User.php';
     include_once 'base/Common.php';
+    include_once 'base/AES.php';
 
     $firstname = $lastname = $email = $password = $confirm_password = '';
 
@@ -61,7 +62,17 @@
 
                         if (FileSystem::write_file($path.'/user.json', $json, $error)) {
 
-                            header('location: login.php');
+                            $AESKey = AES::generateKey();
+
+                            $encryptedAESKey = AES::encrypt($password, $AESKey);
+
+                            if (FileSystem::write_file($path.'/key.txt', $encryptedAESKey, $error)) {
+
+                                header('location: login.php');
+
+                            } else {
+                                $alerts[] = 'Failed to create AES key!';
+                            }
 
                         } else {
                             $alerts[] = 'Failed to create the user due to an unknown reason!';

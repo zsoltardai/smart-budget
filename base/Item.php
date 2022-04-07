@@ -14,6 +14,6 @@ class Item
         $this->name = $name;
         $this->price = $price;
         $this->category = $category;
-        $this->date = date('Y-m-d H:M:s');
+        $this->date = date('Y-m-d H:i:s');
     }
 }

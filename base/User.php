@@ -1,5 +1,7 @@
 <?php
 
+include_once 'AES.php';
+
 class User
 {
     public string $firstname;
@@ -7,7 +9,7 @@ class User
     public string $email;
     public string $password_hash;
 
-    function __construct($firstname, $lastname, $email, $password_hash) {
+    function __construct(string $firstname, string $lastname, string $email, string $password_hash) {
         $this->firstname = $firstname;
         $this->lastname = $lastname;
         $this->email = $email;
@@ -18,15 +20,15 @@ class User
         return json_encode($this);
     }
 
-    public function setFirstname($value) {
+    public function setFirstname($value) : void {
         $this->firstname = $value;
     }
 
-    public function setLastname($value) {
+    public function setLastname($value) : void {
         $this->lastname = $value;
     }
 
-    public static function fromJSON($json) : ?User {
+    public static function fromJSON(string $json) : ?User {
         $object = json_decode($json, true);
         if (!array_key_exists('firstname', $object)) return null;
         if (!array_key_exists('lastname', $object)) return null;

@@ -3,6 +3,7 @@
 include_once 'base/FileSystem.php';
 include_once 'base/User.php';
 include_once 'base/Common.php';
+include_once 'base/AES.php';
 
 $email = $password = '';
 
@@ -38,15 +39,22 @@ if (isset($_POST['btn-login'])) {
 
                     if (password_verify($password, $user->password_hash)) {
 
-                        session_start();
+                        if (FileSystem::read_file($path.'/key.txt', $encryptedAESKey, $error)) {
 
-                        $_SESSION['user'] = md5($user->email);
-                        $_SESSION['firstname'] = $user->firstname;
-                        $_SESSION['lastname'] = $user->lastname;
-                        $_SESSION['email'] = $user->email;
+                            $decryptedAESKey = AES::decrypt($password, $encryptedAESKey);
 
-                        header('location: index.php');
+                            session_start();
 
+                            $_SESSION['user'] = md5($user->email);
+                            $_SESSION['firstname'] = $user->firstname;
+                            $_SESSION['lastname'] = $user->lastname;
+                            $_SESSION['email'] = $user->email;
+                            $_SESSION['key'] = $decryptedAESKey;
+
+                            header('location: index.php');
+                        } else {
+                            $alerts[] = 'Failed to decrypt the AES key!';
+                        }
                     } else {
                         $password_error = 'The provided password was invalid!';
                     }

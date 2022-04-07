@@ -1,17 +1,16 @@
 <?php
     include_once 'header.php';
 
-    global $categories, $LogType;
+    global $categories;
 
     $id = $_SESSION['user'];
-
 
 ?>
 
 <main class="container d-flex" id="content-container">
     <div class="card m-2 w-100">
         <div class="card-title mt-2">
-            <h3 class="nav-link">Add a new item you bought</h3>
+            <h3 class="nav-link">Add item to your budget</h3>
         </div>
         <div class="card-body">
             <form action="budget.php" method="post">
@@ -55,11 +54,17 @@
                 <?php
 
                     if (!FileSystem::read_file('users/'.$id.'/budget.json', $json, $error)) {
-                        Logger::log($LogType['Sys'], "The requested file: users/$id/budget.json does not exist.");
+                        Logger::log('Sys', $error);
                     }
 
-                    echo 'let budget = '.$json.';';
+                    if ($json !== null) {
+                        echo 'let budget = '.AES::decrypt($_SESSION['key'], $json).';';
+                    } else {
+                        echo 'let budget = {};';
+                    }
+
                     echo 'let categories = '.json_encode($categories).';';
+
                 ?>
 
                 let values = [];
