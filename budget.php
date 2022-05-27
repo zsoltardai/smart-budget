@@ -4,12 +4,11 @@ include_once 'base/Common.php';
 include_once 'base/FileSystem.php';
 include_once 'base/User.php';
 include_once 'base/Item.php';
+include_once 'base/AES.php';
 
 session_start();
 
 global $categories;
-
-var_dump($_POST);
 
 if (isset($_POST['id']) && isset($_POST['product-name']) && isset($_POST['product-price'])
     && isset($_POST['product-category'])) {
